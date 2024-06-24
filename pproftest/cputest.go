@@ -1,9 +1,10 @@
 // main.go
-package main
+package pproftest
 
 import (
-	"GoHighPerformance/pproftest"
 	"math/rand"
+	"os"
+	"runtime/pprof"
 	"time"
 )
 
@@ -25,6 +26,17 @@ func bubbleSort(nums []int) {
 	}
 }
 
-func main() {
-	pproftest.MainTestMemo()
+func MainTest() {
+	f, _ := os.OpenFile("cpu.pproftest", os.O_CREATE|os.O_RDWR, 0644)
+	defer f.Close()
+	pprof.StartCPUProfile(f)
+	defer pprof.StopCPUProfile()
+
+	n := 10
+	for i := 0; i < 5; i++ {
+		nums := generate(n)
+		bubbleSort(nums)
+		n *= 10
+	}
+	//fmt.Println(1)
 }
